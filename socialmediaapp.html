@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mini Social Media App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    .post {
+      border-bottom: 1px solid #ddd;
+      padding: 10px 0;
+    }
+
+    .post textarea {
+      width: 100%;
+      height: 60px;
+    }
+
+    .btn {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+      border-radius: 4px;
+      margin-top: 5px;
+    }
+
+    .btn:hover {
+      background-color: #0056b3;
+    }
+
+    .comment-section {
+      margin-top: 10px;
+    }
+
+    .comment {
+      margin-left: 10px;
+      font-size: 14px;
+    }
+
+    .likes {
+      margin-top: 5px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .profile {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 15px;
+    }
+
+    .follow-btn {
+      background-color: #28a745;
+    }
+
+    .follow-btn.following {
+      background-color: #dc3545;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="profile">
+      <h2>harshika</h2>
+      <button class="btn follow-btn" onclick="toggleFollow(this)">Follow</button>
+    </div>
+
+    <div class="post">
+      <textarea id="postText" placeholder="What's on your mind?"></textarea>
+      <button class="btn" onclick="createPost()">Post</button>
+    </div>
+
+    <div id="feed"></div>
+  </div>
+
+  <script>
+    let postId = 0;
+
+    function createPost() {
+      const text = document.getElementById('postText').value.trim();
+      if (!text) return;
+
+      const feed = document.getElementById('feed');
+      const post = document.createElement('div');
+      post.className = 'post';
+      post.innerHTML = `
+        <p><strong>harshika:</strong> ${text}</p>
+        <div class="likes" id="likes-${postId}">0 Likes</div>
+        <button class="btn" onclick="likePost(${postId})">Like</button>
+
+        <div class="comment-section" id="comments-${postId}">
+          <input type="text" id="commentInput-${postId}" placeholder="Write a comment..." />
+          <button class="btn" onclick="addComment(${postId})">Comment</button>
+        </div>
+      `;
+      feed.prepend(post);
+      document.getElementById('postText').value = '';
+      postId++;
+    }
+
+    function likePost(id) {
+      const likesEl = document.getElementById(`likes-${id}`);
+      let currentLikes = parseInt(likesEl.innerText) || 0;
+      currentLikes++;
+      likesEl.innerText = `${currentLikes} Like${currentLikes > 1 ? 's' : ''}`;
+    }
+
+    function addComment(id) {
+      const input = document.getElementById(`commentInput-${id}`);
+      const commentText = input.value.trim();
+      if (!commentText) return;
+
+      const commentsContainer = document.getElementById(`comments-${id}`);
+      const commentEl = document.createElement('div');
+      commentEl.className = 'comment';
+      commentEl.innerText = `harshika: ${commentText}`;
+      commentsContainer.appendChild(commentEl);
+      input.value = '';
+    }
+
+    function toggleFollow(btn) {
+      if (btn.classList.contains('following')) {
+        btn.classList.remove('following');
+        btn.innerText = 'Follow';
+      } else {
+        btn.classList.add('following');
+        btn.innerText = 'Unfollow';
+      }
+    }
+  </script>
+
+</body>
+</html>
