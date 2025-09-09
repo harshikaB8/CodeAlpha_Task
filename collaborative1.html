@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Collaborative Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f7fa;
+      color: #333;
+    }
+    header {
+      background: #4CAF50;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+    .project-form {
+      text-align: center;
+      margin: 20px;
+    }
+    input, button {
+      padding: 10px;
+      margin: 5px;
+      border: none;
+      border-radius: 5px;
+    }
+    button {
+      background: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #45a049;
+    }
+    .board {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding: 20px;
+    }
+    .project {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 15px;
+      width: 300px;
+    }
+    .project h3 {
+      margin: 0 0 10px;
+    }
+    .task {
+      background: #e3f2fd;
+      padding: 8px;
+      margin: 5px 0;
+      border-radius: 5px;
+    }
+    .comment {
+      font-size: 14px;
+      margin-left: 10px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Team Collaboration Tool</h1>
+  </header>
+
+  <main>
+    <!-- Project Creation -->
+    <section class="project-form">
+      <h2>Create Project</h2>
+      <input type="text" id="projectName" placeholder="Enter project name">
+      <button onclick="createProject()">Create</button>
+    </section>
+
+    <!-- Project Boards -->
+    <section id="projectBoard" class="board"></section>
+  </main>
+
+  <script>
+    let projects = [];
+
+    function createProject() {
+      const projectName = document.getElementById("projectName").value;
+      if (projectName.trim() === "") {
+        alert("Enter a project name!");
+        return;
+      }
+
+      const project = { name: projectName, tasks: [] };
+      projects.push(project);
+      document.getElementById("projectName").value = "";
+      renderProjects();
+    }
+
+    function addTask(projectIndex) {
+      const taskText = prompt("Enter task:");
+      if (!taskText) return;
+
+      projects[projectIndex].tasks.push({ text: taskText, comments: [] });
+      renderProjects();
+    }
+
+    function addComment(projectIndex, taskIndex) {
+      const commentText = prompt("Enter comment:");
+      if (!commentText) return;
+
+      projects[projectIndex].tasks[taskIndex].comments.push(commentText);
+      renderProjects();
+    }
+
+    function renderProjects() {
+      const board = document.getElementById("projectBoard");
+      board.innerHTML = "";
+
+      projects.forEach((project, pIndex) => {
+        const projDiv = document.createElement("div");
+        projDiv.classList.add("project");
+
+        projDiv.innerHTML = `
+          <h3>${project.name}</h3>
+          <button onclick="addTask(${pIndex})">+ Add Task</button>
+        `;
+
+        project.tasks.forEach((task, tIndex) => {
+          const taskDiv = document.createElement("div");
+          taskDiv.classList.add("task");
+          taskDiv.innerHTML = `
+            <strong>${task.text}</strong>
+            <button onclick="addComment(${pIndex}, ${tIndex})">💬</button>
+            <div>
+              ${task.comments.map(c => `<p class="comment">- ${c}</p>`).join("")}
+            </div>
+          `;
+          projDiv.appendChild(taskDiv);
+        });
+
+        board.appendChild(projDiv);
+      });
+    }
+  </script>
+</body>
+</html>
